@@ -13,7 +13,7 @@ simplify_trace_ids(p)
 A \link[plotly:plot_ly]{plotly object}.
 }
 \description{
-Replaces the random trace identifiers of a \link[plotly:plot_ly]{plotly object} with simple sequential ones (\code{trace_1}, \code{trace_2} etc).
+Replaces the random trace identifiers of a \link[plotly:plot_ly]{plotly object} with simple sequential ones (\code{trace_1}, \code{trace_2} and so on).
 }
 \details{
 This function is especially useful to apply before a plotly object or its JSON representation (as generated for rendered R Markdown / Quarto documents)
