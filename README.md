@@ -6,6 +6,8 @@ Provides unofficial helper functions around the [plotly](https://plotly-r.com/) 
 
 ## Documentation
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f1183707-47e4-4767-ac4d-d52ec0200a38/deploy-status)](https://app.netlify.com/sites/plotlee-rpkg-dev/deploys)
+
 The documentation of this package is found [here](https://plotlee.rpkg.dev).
 
 ## Installation
