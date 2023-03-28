@@ -10,14 +10,15 @@ License: AGPL (>= 3)
 URL: https://gitlab.com/salim_b/r/pkgs/plotlee
 BugReports: https://gitlab.com/salim_b/r/pkgs/plotlee/issues
 Imports: 
-    checkmate (>= 2.1.0),
     magrittr (>= 2.0.3),
     plotly (>= 4.10.1),
     purrr (>= 1.0.1),
     rlang (>= 1.1.0)
 Suggests: 
+    testthat (>= 3.0.0),
     utils (>= 4.2.3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Config/testthat/edition: 3

@@ -17,4 +17,4 @@ template:
       creator: '@2BSalim'
 url: https://plotlee.rpkg.dev
 reference:
-- contents: clean_data_hash
+- contents: simplify_trace_ids

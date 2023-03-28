@@ -16,9 +16,9 @@ utils::globalVariables(names = c("."))
 
 this_pkg <- utils::packageName()
 
-#' Make plotly data identifier reproducible
+#' Make plotly trace identifiers reproducible
 #'
-#' Replaces the random [data][plotly::plotly_data] identifier of a [plotly object][plotly::plot_ly] with a deterministic hash value of the data's content.
+#' Replaces the random trace identifiers of a [plotly object][plotly::plot_ly] with simple sequential ones (`trace_1`, `trace_2` etc).
 #'
 #' This function is especially useful to apply before a plotly object or its JSON representation (as generated for rendered R Markdown / Quarto documents) 
 #' is [version controlled](https://en.wikipedia.org/wiki/Version_control) (e.g. via Git).
@@ -39,26 +39,33 @@ this_pkg <- utils::packageName()
 #'                       x = ~mpg,
 #'                       type = "histogram")
 #'
-#' p_deterministic <- plotlee::clean_data_hash(p)
-#' p2_deterministic <- plotlee::clean_data_hash(p)
+#' p_deterministic <- plotlee::simplify_trace_ids(p)
+#' p2_deterministic <- plotlee::simplify_trace_ids(p2)
 #'
-#' p$x$cur_data
-#' p2$x$cur_data
-#' p_deterministic$x$cur_data
-#' p2_deterministic$x$cur_data
-clean_data_hash <- function(p) {
+#' names(p$x$visdat)
+#' names(p2$x$visdat)
+#' names(p_deterministic$x$visdat)
+#' names(p2_deterministic$x$visdat)
+simplify_trace_ids <- function(p) {
   
-  id_cur <- checkmate::assert_string(p$x$cur_data,
-                                     min.chars = 1L)
-  data <- p$x$visdat[[id_cur]]()
-  id_new <- rlang::hash(data)
+  trace_ids <- names(p$x$visdat)
+  cur_id <- p$x$cur_data
   
-  p$x$cur_data <- id_new
-  p$x %<>% purrr::modify_tree(is_node = is.list,
-                              post = \(x) {
-                                
-                                names(x)[names(x) == id_cur] <- id_new
-                                x
-                              })
+  for (i in seq_along(trace_ids)) {
+    
+    new_id <- paste0("trace_", i)
+    
+    p$x %<>% purrr::modify_tree(is_node = is.list,
+                                post = \(x) {
+                                  
+                                  names(x)[names(x) == trace_ids[i]] <- new_id
+                                  x
+                                })
+    
+    if (trace_ids[i] == cur_id) {
+      p$x$cur_data <- new_id
+    }
+  }
+  
   p
 }
