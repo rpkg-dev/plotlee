@@ -35,10 +35,17 @@ this_pkg <- utils::packageName()
 #'                      x = ~mpg,
 #'                      type = "histogram")
 #'
+#' p2 <- plotly::plot_ly(data = mtcars,
+#'                       x = ~mpg,
+#'                       type = "histogram")
+#'
 #' p_deterministic <- plotlee::clean_data_hash(p)
+#' p2_deterministic <- plotlee::clean_data_hash(p)
 #'
 #' p$x$cur_data
+#' p2$x$cur_data
 #' p_deterministic$x$cur_data
+#' p2_deterministic$x$cur_data
 clean_data_hash <- function(p) {
   
   id_cur <- checkmate::assert_string(p$x$cur_data,
