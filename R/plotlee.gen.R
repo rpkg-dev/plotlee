@@ -53,12 +53,15 @@ simplify_trace_ids <- function(p) {
   
   for (i in seq_along(trace_ids)) {
     
-    new_id <- paste0("trace_", i)
+    new_id <- paste0("trace_", i - 1L)
     
     p$x %<>% purrr::modify_tree(is_node = is.list,
                                 post = \(x) {
                                   
-                                  names(x)[names(x) == trace_ids[i]] <- new_id
+                                  if (utils::hasName(x, trace_ids[i])) {
+                                    names(x)[names(x) == trace_ids[i]] <- new_id
+                                  }
+                                  
                                   x
                                 })
     
