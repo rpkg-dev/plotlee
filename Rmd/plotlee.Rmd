@@ -1,0 +1,70 @@
+---
+editor_options:
+  chunk_output_type: console
+---
+
+# INTERNAL
+
+## Avoid `R CMD check` notes about undefined global objects used in magrittr pipes
+
+cf. <https://github.com/tidyverse/magrittr/issues/29#issuecomment-74313262>
+
+```{r}
+utils::globalVariables(names = c("."))
+```
+
+## Constants
+
+```{r}
+this_pkg <- utils::packageName()
+```
+
+# EXPORTED
+
+## `clean_data_hash`
+
+NOTES:
+
+-   The underlying issue this function solves is reported upstream in [#2074](https://github.com/plotly/plotly.R/issues/2074).
+
+```{r}
+#' Make plotly data identifier reproducible
+#'
+#' Replaces the random [data][plotly::plotly_data] identifier of a [plotly object][plotly::plot_ly] with a deterministic hash value of the data's content.
+#'
+#' This function is especially useful to apply before a plotly object or its JSON representation (as generated for rendered R Markdown / Quarto documents) 
+#' is [version controlled](https://en.wikipedia.org/wiki/Version_control) (e.g. via Git).
+#' 
+#' To also make the htmlwidget identifier reproducible when rendering a Plotly chart, use [htmlwidgets::setWidgetIdSeed()].
+#'
+#' @param p [Plotly object][plotly::plot_ly] to modify.
+#'
+#' @return `r pkgsnip::return_label("plotly_obj")`
+#' @export
+#'
+#' @examples
+#' p <- plotly::plot_ly(data = mtcars,
+#'                      x = ~mpg,
+#'                      type = "histogram")
+#'
+#' p_deterministic <- plotlee::clean_data_hash(p)
+#'
+#' p$x$cur_data
+#' p_deterministic$x$cur_data
+clean_data_hash <- function(p) {
+  
+  id_cur <- checkmate::assert_string(p$x$cur_data,
+                                     min.chars = 1L)
+  data <- p$x$visdat[[id_cur]]()
+  id_new <- rlang::hash(data)
+  
+  p$x$cur_data <- id_new
+  p$x %<>% purrr::modify_tree(is_node = is.list,
+                              post = \(x) {
+                                
+                                names(x)[names(x) == id_cur] <- id_new
+                                x
+                              })
+  p
+}
+```

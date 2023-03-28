@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://plotlee.rpkg.dev/dev/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://plotlee.rpkg.dev/dev/authors.html</loc>
+  </url>
+  <url>
+    <loc>https://plotlee.rpkg.dev/dev/index.html</loc>
+  </url>
+  <url>
+    <loc>https://plotlee.rpkg.dev/dev/reference/clean_data_hash.html</loc>
+  </url>
+  <url>
+    <loc>https://plotlee.rpkg.dev/dev/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://plotlee.rpkg.dev/dev/reference/plotlee-package.html</loc>
+  </url>
+</urlset>

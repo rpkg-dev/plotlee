@@ -1,0 +1,75 @@
+---
+output: pal::gitlab_document
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(rlang,
+        include.only = c("%|%", "%||%"))
+library(magrittr,
+        include.only = c("%>%", "%<>%", "%T>%", "%!>%", "%$%"))
+```
+
+# `r pal::desc_value("Package")`
+
+```{r}
+#| label: description
+#| results: asis
+#| echo: false
+
+pal::cat_lines(paste0("[![CRAN Status](https://r-pkg.org/badges/version/", pal::desc_value(key = "Package"), ")](https://cran.r-project.org/package=",
+                      pal::desc_value(key = "Package"), "){.pkgdown-release}"),
+               "",
+               stringr::str_replace_all(string = pal::desc_value("Description"),
+                                        pattern = c("plotly package" = "[plotly](https://plotly-r.com/) package",
+                                                    "plotly.js" = "[plotly.js](https://plotly.com/javascript/)")))
+```
+
+```{r}
+#| label: documentation
+#| eval: !expr '!isTRUE(getOption("pal.build_readme.is_pkgdown"))'
+#| results: asis
+#| echo: false
+pkgsnip::md_snip(name = "pkgdown_notice") %>%
+  paste0("## Documentation\n\n", .) %>%
+  pal::cat_lines()
+```
+
+## Installation
+
+```{r}
+#| label: install-snippet-dev
+#| child: !expr pkgsnip::snip_path("installation-notice_dev-version_gitlab.Rmd")
+```
+
+```{r}
+#| label: usage
+#| eval: !expr isTRUE(getOption("pal.build_readme.is_pkgdown"))
+#| results: asis
+#| echo: false
+pkgsnip::md_snip(name = "usage_notice") %>%
+  paste0("## Usage\n\n", .) %>%
+  pal::cat_lines()
+```
+
+## Development
+
+### R Markdown format
+
+```{r}
+#| label: rmd-format
+#| child: !expr pkgsnip::snip_path("rmd-package-notice.Rmd")
+```
+
+### Coding style
+
+```{r}
+#| label: coding-style
+#| child: !expr pkgsnip::snip_path("coding-style-notice.Rmd")
+```
+
+## See also
+
+-   ...
