@@ -54,7 +54,13 @@ relevant if \code{crop = TRUE}. Note that \code{padding} has no effect on \code{
 \code{plots}, invisibly.
 }
 \description{
-Writes Plotly charts to static image files in SVG and optionally additional formats (EPS, PDF, PNG, PS, and/or WebP) using \code{\link[plotly:save_image]{plotly::kaleido()}}.
+Writes Plotly charts to static image files in SVG and optionally additional formats (EPS, PDF, PNG, PS, and/or WebP) using \code{\link[plotly:save_image]{plotly::kaleido()}}. In contrast
+to \code{\link[plotly:save_image]{plotly::save_image()}}, this function
+\itemize{
+\item can export multiple \link[plotly:plot_ly]{plotly objects} in a single kaleido session to multiple output formats in one go.
+\item can tweak the exported SVG image to be responsive.
+\item supports automatic cropping of unused space around the exported images.
+}
 }
 \details{
 PNG and WebP images are completely based on the resulting SVG image, while EPS, PDF and PS are built from an intermediate SVG representation (before
