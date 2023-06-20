@@ -74,7 +74,3 @@ pkgsnip::md_snip(name = "usage_notice") %>%
 #| label: coding-style
 #| child: !expr pkgsnip::snip_path("coding-style-notice.Rmd")
 ```
-
-## See also
-
--   ...
