@@ -27,8 +27,10 @@ static_img_formats <- c("eps", "pdf", "png", "ps", "webp")
 #' Save Plotly charts as static images
 #'
 #' @description
-#' Writes Plotly charts to static image files in SVG and optionally additional formats (EPS, PDF, PNG, PS, and/or WebP) using [plotly::kaleido()]. In contrast
-#' to [plotly::save_image()], this function
+#' Writes Plotly charts to static image files in SVG and optionally additional formats (EPS, PDF, PNG, PS, and/or WebP) using [plotly::kaleido()].
+#' 
+#' In contrast to [plotly::save_image()], this function
+#'
 #' - can export multiple [plotly objects][plotly::plot_ly] in a single kaleido session to multiple output formats in one go.
 #' - can tweak the exported SVG image to be responsive.
 #' - supports automatic cropping of unused space around the exported images.
