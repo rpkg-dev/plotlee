@@ -13,8 +13,8 @@ test_that("`simplify_trace_ids()` works as expected", {
     simplify_trace_ids()
   
   expect_identical(names(p$x$visdat),
-                   paste0("trace_", 1:3))
+                   paste0("trace_", 0:2))
   
   expect_identical(p$x$cur_data,
-                   "trace_3")
+                   "trace_2")
 })
