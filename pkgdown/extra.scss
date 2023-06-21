@@ -1,0 +1,18 @@
+main {
+  /* 
+       add more spacing above headers
+       
+       Bootstrap only exposes a `$headings-margin-bottom` and [no `*-top` equivalent](https://github.com/twbs/bootstrap/blob/main/scss/_reboot.scss#L83-L91), thus
+       we manually set it
+  */
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 1em;
+  }
+
+  /* tables that adapt to viewport width */
+  .table-wide {
+    min-width: 100%;
+    max-width: 1320px;
+    width: 85vw;
+  }
+}
