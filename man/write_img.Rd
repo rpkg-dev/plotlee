@@ -59,7 +59,7 @@ Writes Plotly charts to static image files in SVG and optionally additional form
 In contrast to \code{\link[plotly:save_image]{plotly::save_image()}}, this function
 \itemize{
 \item can export multiple \link[plotly:plot_ly]{plotly objects} in a single kaleido session to multiple output formats in one go.
-\item can tweak the exported SVG image to be responsive.
+\item can tweak the exported SVG images to be responsive.
 \item supports automatic cropping of unused space around the exported images.
 }
 }

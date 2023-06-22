@@ -32,7 +32,7 @@ static_img_formats <- c("eps", "pdf", "png", "ps", "webp")
 #' In contrast to [plotly::save_image()], this function
 #'
 #' - can export multiple [plotly objects][plotly::plot_ly] in a single kaleido session to multiple output formats in one go.
-#' - can tweak the exported SVG image to be responsive.
+#' - can tweak the exported SVG images to be responsive.
 #' - supports automatic cropping of unused space around the exported images.
 #'
 #' @details
