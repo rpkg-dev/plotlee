@@ -11,8 +11,8 @@ Provides unofficial helper functions around the plotly package, the R API for th
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://gitlab.com/salim_b/r/pkgs/plotlee}
-  \item Report bugs at \url{https://gitlab.com/salim_b/r/pkgs/plotlee/issues}
+  \item \url{https://gitlab.com/rpkg.dev/plotlee}
+  \item Report bugs at \url{https://gitlab.com/rpkg.dev/plotlee/issues}
 }
 
 }

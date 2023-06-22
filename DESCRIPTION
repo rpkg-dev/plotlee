@@ -7,8 +7,8 @@ Authors@R:
 Description: Provides unofficial helper functions around the plotly
     package, the R API for the JavaScript graphing library plotly.js.
 License: AGPL (>= 3)
-URL: https://gitlab.com/salim_b/r/pkgs/plotlee
-BugReports: https://gitlab.com/salim_b/r/pkgs/plotlee/issues
+URL: https://gitlab.com/rpkg.dev/plotlee
+BugReports: https://gitlab.com/rpkg.dev/plotlee/issues
 Imports: 
     checkmate (>= 2.2.0),
     cli (>= 3.6.1),
@@ -28,7 +28,7 @@ Suggests:
     testthat (>= 3.0.0),
     utils (>= 4.2.3)
 Remotes:
-    gitlab::salim_b/r/pkgs/pal
+    gitlab::rpkg.dev/pal
 Config/reticulate: list(packages = list(list(package = "plotly", pip =
     TRUE), list(package = "kaleido", pip = TRUE)))
 Config/testthat/edition: 3
