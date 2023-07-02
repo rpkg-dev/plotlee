@@ -34,7 +34,7 @@ pal::cat_lines(paste0("[![CRAN Status](https://r-pkg.org/badges/version/", pal::
 #| eval: !expr '!isTRUE(getOption("pal.build_readme.is_pkgdown"))'
 #| results: asis
 #| echo: false
-pkgsnip::md_snip(name = "pkgdown_notice") %>%
+pkgsnip::md_snip(id = "pkgdown_notice") %>%
   paste0("## Documentation\n\n",
          "[![Netlify Status](https://api.netlify.com/api/v1/badges/f1183707-47e4-4767-ac4d-d52ec0200a38/deploy-status)]",
          "(https://app.netlify.com/sites/plotlee-rpkg-dev/deploys)\n\n",
@@ -54,7 +54,7 @@ pkgsnip::md_snip(name = "pkgdown_notice") %>%
 #| eval: !expr isTRUE(getOption("pal.build_readme.is_pkgdown"))
 #| results: asis
 #| echo: false
-pkgsnip::md_snip(name = "usage_notice") %>%
+pkgsnip::md_snip(id = "usage_notice") %>%
   paste0("## Usage\n\n", .) %>%
   pal::cat_lines()
 ```
