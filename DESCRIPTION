@@ -9,6 +9,8 @@ Description: Provides unofficial helper functions around the plotly
 License: AGPL (>= 3)
 URL: https://gitlab.com/rpkg.dev/plotlee
 BugReports: https://gitlab.com/rpkg.dev/plotlee/issues
+Depends: 
+    R (>= 4.2)
 Imports: 
     checkmate (>= 2.2.0),
     cli (>= 3.6.1),
