@@ -166,8 +166,8 @@ write_img <- function(plots,
   
   # export to SVG
   plots %>%
-    purrr::iwalk(.progress = cli::cli_text("Exporting {.val {length(.)}} Plotly chart{?s} as static {.field SVG} and {.field {toupper(formats)}} ",
-                                           "{cli::qty(length(.))} image{?s} to {.path {paste0(dir, '/')}}..."),
+    purrr::iwalk(.progress = cli::format_inline("Exporting {.val {length(.)}} Plotly chart{?s} as static {.field SVG} and {.field {toupper(formats)}}",
+                                                "{cli::qty(length(.))} image{?s} to {.path {paste0(dir, '/')}}..."),
                  \(obj, id) kaleido$transform(p = obj,
                                               file = fs::path(dir, id,
                                                               ext = "svg"),
