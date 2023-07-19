@@ -253,7 +253,7 @@ write_img <- function(plots,
 #'
 #' @param p [Plotly object][plotly::plot_ly] to modify.
 #'
-#' @return `r pkgsnip::return_label("plotly_obj")`
+#' @return `r pkgsnip::return_lbl("plotly_obj")`
 #' @export
 #'
 #' @examples
