@@ -72,7 +72,8 @@ supports automatic cropping of unused space around the exported images.
 <span>  scale <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  responsive <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  crop <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  padding <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span>  padding <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  show_progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -121,6 +122,10 @@ always cropped while cropping PS images is not supported.</p></dd>
 <li><p>When four values are specified, the paddings apply to the top, right, bottom, and left in that order (clockwise).</p></li>
 </ul><p>For <code>formats = "pdf"</code>, the values are in <a href="https://en.wikibooks.org/wiki/LaTeX/Lengths#Units" class="external-link"><code>bp</code></a> ("big points"), for all other formats in pixels. Only
 relevant if <code>crop = TRUE</code>. Note that <code>padding</code> has no effect on <code>formats = "eps"</code>, i.e. EPS images are always fully cropped.</p></dd>
+
+
+<dt>show_progress</dt>
+<dd><p>`r pkgsnip::param_lbl("show_progress")``</p></dd>
 
 </dl></div>
     <div class="section level2">

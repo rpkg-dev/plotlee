@@ -90,6 +90,7 @@ TODO:
 #'   
 #'   For `formats = "pdf"`, the values are in [`bp`](https://en.wikibooks.org/wiki/LaTeX/Lengths#Units) ("big points"), for all other formats in pixels. Only
 #'   relevant if `crop = TRUE`. Note that `padding` has no effect on `formats = "eps"`, i.e. EPS images are always fully cropped.
+#' @param show_progress `r pkgsnip::param_lbl("show_progress")``
 #'
 #' @return `plots`, invisibly.
 #' @export
@@ -111,7 +112,8 @@ write_img <- function(plots,
                       scale = NULL,
                       responsive = TRUE,
                       crop = TRUE,
-                      padding = c(0, 10, 0, 10)) {
+                      padding = c(0, 10, 0, 10),
+                      show_progress = TRUE) {
   
   checkmate::assert_list(plots,
                          types = "plotly",
@@ -129,6 +131,8 @@ write_img <- function(plots,
                             any.missing = FALSE,
                             min.len = 1L,
                             max.len = 4L)
+  checkmate::assert_flag(show_progress)
+  
   # init padding
   n_padding <- length(padding)
   padding_top <- padding_bottom <- padding_left <- padding_right <- padding[1L]
@@ -165,15 +169,17 @@ write_img <- function(plots,
   kaleido$scope$mathjax <- NULL
   
   # export to SVG
-  plots %>%
-    purrr::iwalk(.progress = cli::format_inline("Exporting {.val {length(.)}} Plotly chart{?s} as static {.field SVG} and {.field {toupper(formats)}}",
-                                                "{cli::qty(length(.))} image{?s} to {.path {paste0(dir, '/')}}..."),
-                 \(obj, id) kaleido$transform(p = obj,
-                                              file = fs::path(dir, id,
-                                                              ext = "svg"),
-                                              width = width,
-                                              height = height,
-                                              scale = scale))
+  purrr::iwalk(.progress = ifelse(show_progress,
+                                  cli::format_inline("Exporting {.val {length(plots)}} Plotly chart{?s} as static {.field SVG} and {.field {toupper(formats)}}",
+                                                     "{cli::qty(length(plots))} image{?s} to {.path {paste0(dir, '/')}}..."),
+                                  FALSE),
+               .x = plots,
+               .f = \(obj, id) kaleido$transform(p = obj,
+                                                 file = fs::path(dir, id,
+                                                                 ext = "svg"),
+                                                 width = width,
+                                                 height = height,
+                                                 scale = scale))
   kaleido$shutdown()
   
   # convert SVG to those additional requested formats that **don't** properly handle viewbox-cropped SVGs
@@ -182,7 +188,10 @@ write_img <- function(plots,
   formats_1st <- intersect(formats, all_formats_1st)
   formats_2nd <- setdiff(formats, all_formats_1st)
   
-  purrr::walk(formats_1st,
+  purrr::walk(.progress = ifelse(show_progress,
+                                 cli::format_inline("Converting {.val {length(files_excl_ext)}} original SVG images to {.field {formats_1st}} formats"),
+                                 FALSE),
+              formats_1st,
               \(format) {
                 
                 purrr::walk(files_excl_ext,
@@ -217,7 +226,10 @@ write_img <- function(plots,
     
     fs::path(dir, names(plots),
              ext = "svg") %>%
-      purrr::walk(\(path) {
+      purrr::walk(.progress = ifelse(show_progress,
+                                     cli::format_inline("Post-processing {.val {length(plots)}} SVG images"),
+                                     FALSE),
+                  \(path) {
         
         xml <- xml2::read_xml(path)
         attrs <- character()
@@ -263,7 +275,10 @@ write_img <- function(plots,
   }
   
   # convert SVG to the remaining additional requested formats that **do** properly handle viewbox-cropped SVGs
-  purrr::walk(formats_2nd,
+  purrr::walk(.progress = ifelse(show_progress,
+                                 cli::format_inline("Converting {.val {length(files_excl_ext)}} post-processed SVG images to {.field {formats_2nd}} formats"),
+                                 FALSE),
+              formats_2nd,
               \(format) {
                 purrr::walk(files_excl_ext,
                             \(path) eval(parse(text = glue::glue("rsvg::rsvg_{format}(svg = '{path}.svg', file = '{path}.{format}')"))))

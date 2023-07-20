@@ -13,7 +13,8 @@ write_img(
   scale = NULL,
   responsive = TRUE,
   crop = TRUE,
-  padding = c(0, 10, 0, 10)
+  padding = c(0, 10, 0, 10),
+  show_progress = TRUE
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ always cropped while cropping PS images is not supported.}
 
 For \code{formats = "pdf"}, the values are in \href{https://en.wikibooks.org/wiki/LaTeX/Lengths#Units}{\code{bp}} ("big points"), for all other formats in pixels. Only
 relevant if \code{crop = TRUE}. Note that \code{padding} has no effect on \code{formats = "eps"}, i.e. EPS images are always fully cropped.}
+
+\item{show_progress}{`r pkgsnip::param_lbl("show_progress")``}
 }
 \value{
 \code{plots}, invisibly.
