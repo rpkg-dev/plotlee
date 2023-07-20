@@ -13,7 +13,7 @@ write_img(
   scale = NULL,
   responsive = TRUE,
   crop = TRUE,
-  padding = c(0, 10, 0, 10),
+  padding = c(0L, 10L, 0L, 10L),
   show_progress = TRUE
 )
 }

@@ -82,7 +82,7 @@ write_img <- function(plots,
                       scale = NULL,
                       responsive = TRUE,
                       crop = TRUE,
-                      padding = c(0, 10, 0, 10),
+                      padding = c(0L, 10L, 0L, 10L),
                       show_progress = TRUE) {
   
   checkmate::assert_list(plots,
@@ -97,7 +97,7 @@ write_img <- function(plots,
   checkmate::assert_flag(responsive)
   checkmate::assert_flag(crop)
   checkmate::assert_numeric(padding,
-                            lower = 0,
+                            lower = 0.0,
                             any.missing = FALSE,
                             min.len = 1L,
                             max.len = 4L)
@@ -200,48 +200,48 @@ write_img <- function(plots,
                                      cli::format_inline("Post-processing {.val {length(plots)}} SVG images"),
                                      FALSE),
                   \(path) {
-        
-        xml <- xml2::read_xml(path)
-        attrs <- character()
-        
-        # change SVGs' `width` and `height` properties to `100%` if requested
-        if (responsive) {
-          attrs["width"] <- "100%"
-          attrs["height"] <- "100%"
-        }
-        
-        # crop unused transparent space around image if requested; inspired by https://stackoverflow.com/a/69783110/7196903
-        if (crop) {
-          
-          # determine opaque pixel coordinates
-          data_img <- magick::image_read_svg(path = path) |> magick::image_data()
-          ix_opaque <- which(data_img[4L, , ] != 0L,
-                             arr.ind = TRUE)
-          ix_opaque_start <- apply(X = ix_opaque,
-                                   MARGIN = 2L,
-                                   FUN = min)
-          ix_opaque_end <- apply(X = ix_opaque,
-                                 MARGIN = 2L,
-                                 FUN = max) - ix_opaque_start
-          
-          attrs["viewBox"] <- paste(paste(ix_opaque_start - c(padding_left, padding_top),
-                                          collapse = " "),
-                                    paste(ix_opaque_end + c(padding_left + padding_right, padding_top + padding_bottom),
-                                          collapse = " "))
-        }
-        
-        # apply new SVG attributes
-        # NOTE: we can't use `xml2::xml_set_attrs()` since it completely replaces all attrs but at the same time doesn't allow to set the `xmlns:xlink` attr
-        #       again (it fails with a critical error if it's tried); thus we set the additional attrs one by one
-        purrr::iwalk(attrs,
-                     \(val, name) xml2::xml_set_attr(x = xml,
-                                                     attr = name,
-                                                     value = val))
-        # overwrite original SVG file
-        xml2::write_xml(x = xml,
-                        file = path,
-                        options = c("format", "no_declaration"))
-      })
+                    
+                    xml <- xml2::read_xml(path)
+                    attrs <- character()
+                    
+                    # change SVGs' `width` and `height` properties to `100%` if requested
+                    if (responsive) {
+                      attrs["width"] <- "100%"
+                      attrs["height"] <- "100%"
+                    }
+                    
+                    # crop unused transparent space around image if requested; inspired by https://stackoverflow.com/a/69783110/7196903
+                    if (crop) {
+                      
+                      # determine opaque pixel coordinates
+                      data_img <- magick::image_read_svg(path = path) |> magick::image_data()
+                      ix_opaque <- which(data_img[4L, , ] != 0L,
+                                         arr.ind = TRUE)
+                      ix_opaque_start <- apply(X = ix_opaque,
+                                               MARGIN = 2L,
+                                               FUN = min)
+                      ix_opaque_end <- apply(X = ix_opaque,
+                                             MARGIN = 2L,
+                                             FUN = max) - ix_opaque_start
+                      
+                      attrs["viewBox"] <- paste(paste(ix_opaque_start - c(padding_left, padding_top),
+                                                      collapse = " "),
+                                                paste(ix_opaque_end + c(padding_left + padding_right, padding_top + padding_bottom),
+                                                      collapse = " "))
+                    }
+                    
+                    # apply new SVG attributes
+                    # NOTE: we can't use `xml2::xml_set_attrs()` since it completely replaces all attrs but at the same time doesn't allow to set the
+                    #        `xmlns:xlink` attr again (it fails with a critical error if it's tried); thus we set the additional attrs one by one
+                    purrr::iwalk(attrs,
+                                 \(val, name) xml2::xml_set_attr(x = xml,
+                                                                 attr = name,
+                                                                 value = val))
+                    # overwrite original SVG file
+                    xml2::write_xml(x = xml,
+                                    file = path,
+                                    options = c("format", "no_declaration"))
+                  })
   }
   
   # convert SVG to the remaining additional requested formats that **do** properly handle viewbox-cropped SVGs
