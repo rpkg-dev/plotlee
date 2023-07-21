@@ -103,6 +103,14 @@ write_img <- function(plots,
                             max.len = 4L)
   checkmate::assert_flag(show_progress)
   
+  # normalize dir
+  dir %<>% fs::path_real()
+  dir_rel <-
+    dir |>
+    c(fs::path_wd()) |>
+    fs::path_common() |>
+    fs::path_rel(path = dir)
+  
   # init padding
   n_padding <- length(padding)
   padding_top <- padding_bottom <- padding_left <- padding_right <- padding[1L]
@@ -141,7 +149,7 @@ write_img <- function(plots,
   # export to SVG
   purrr::iwalk(.progress = ifelse(show_progress,
                                   cli::format_inline("Exporting {.val {length(plots)}} Plotly chart{?s} as static {.field SVG} and {.field {toupper(formats)}}",
-                                                     "{cli::qty(length(plots))} image{?s} to {.path {paste0(dir, '/')}}..."),
+                                                     "{cli::qty(length(plots))} image{?s} to {.path {paste0(dir_rel, '/')}}..."),
                                   FALSE),
                .x = plots,
                .f = \(obj, id) kaleido$transform(p = obj,

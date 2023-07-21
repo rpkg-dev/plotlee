@@ -49,9 +49,9 @@ NOTES:
 -   `rsvg::rsvg_*()` handles unused transparent space around the input SVG differently for the different output formats. `rsvg::rsvg_eps/pdf/ps()` do not
     properly handle viewbox-cropped SVGs, while `rsvg::rsvg_png/webp` do. Thus we account for this in the function's logic.
 
-TODO:
-
--   Move a generalized version of this fn to pkg plotlee!
+-   The resulting SVG images are not fully reproducible/deterministic due to SVG element `id` attributes including a random hash value (e.g. `defs-cf4626`,
+    `topdefs-cf4626`, `legendcf4626` etc.). Setting RNG seeds, i.e. `set.seed(42L); htmlwidgets::setWidgetIdSeed(seed = 42)`, before the Kaleido export doesn't
+    help -- which means this probably needs to rather be addressed in the underlying Kaleido Python code instead.
 
 ```{r}
 #' Save Plotly charts as static images
@@ -133,6 +133,14 @@ write_img <- function(plots,
                             max.len = 4L)
   checkmate::assert_flag(show_progress)
   
+  # normalize dir
+  dir %<>% fs::path_real()
+  dir_rel <-
+    dir |>
+    c(fs::path_wd()) |>
+    fs::path_common() |>
+    fs::path_rel(path = dir)
+  
   # init padding
   n_padding <- length(padding)
   padding_top <- padding_bottom <- padding_left <- padding_right <- padding[1L]
@@ -171,7 +179,7 @@ write_img <- function(plots,
   # export to SVG
   purrr::iwalk(.progress = ifelse(show_progress,
                                   cli::format_inline("Exporting {.val {length(plots)}} Plotly chart{?s} as static {.field SVG} and {.field {toupper(formats)}}",
-                                                     "{cli::qty(length(plots))} image{?s} to {.path {paste0(dir, '/')}}..."),
+                                                     "{cli::qty(length(plots))} image{?s} to {.path {paste0(dir_rel, '/')}}..."),
                                   FALSE),
                .x = plots,
                .f = \(obj, id) kaleido$transform(p = obj,
