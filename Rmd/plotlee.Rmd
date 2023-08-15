@@ -43,8 +43,9 @@ static_img_formats <- c("eps", "pdf", "png", "ps", "webp")
 
 NOTES:
 
--   To initialize reticulate's default shared Python virtualenv `r-reticulate`, run `reticulate::virtualenv_create()`. After that, reticulate won't nudge to use
-    miniconda anymore.
+-   To initialize reticulate's default shared Python virtualenv `r-reticulate`, run `reticulate::virtualenv_create()`. Before reticulate
+    [v1.31](https://github.com/rstudio/reticulate/releases/tag/v1.31), it nudged to install miniconda if this virtualenv didn't exist. Latest reticulate
+    automatically proposes to create this virtualenv 🎉!
 
 -   `rsvg::rsvg_*()` handles unused transparent space around the input SVG differently for the different output formats. `rsvg::rsvg_eps/pdf/ps()` do not
     properly handle viewbox-cropped SVGs, while `rsvg::rsvg_png/webp` do. Thus we account for this in the function's logic.
