@@ -214,7 +214,14 @@ write_img <- function(plots,
                               
                               if (format == "pdf" && crop) {
                                 
-                                pal::assert_cli("pdfcrop")
+                                pal::assert_cli(
+                                  cmd = "pdfcrop",
+                                  error_msg = paste0("The {.strong pdfcrop} executable is required but couldn't be found on system's {.href ",
+                                                     "[PATH](https://en.wikipedia.org/wiki/PATH_(variable))}. It is usually installed together with a full TeX ",
+                                                     "distribution like {.href [TeX Live](https://en.wikipedia.org/wiki/TeX_Live)}. If you're using {.href ",
+                                                     "[TinyTeX](https://yihui.org/tinytex/)}, simply install the {.href [pdfcrop LaTeX ",
+                                                     "package](https://ctan.org/pkg/pdfcrop)} via {.run tinytex::tlmgr_install(\"pdfcrop\")}.")
+                                )
                                 
                                 if (tools::find_gs_cmd() == '') {
                                   cli::cli_alert_warning(paste0("PDF cropping is skipped since the required Ghostscript executable wasn't found. See",
