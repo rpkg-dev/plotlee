@@ -332,7 +332,6 @@ write_img <- function(plots,
                             any.missing = FALSE)
   checkmate::assert_logical(crop,
                             any.missing = FALSE)
-  
   if (is.list(padding)) {
     checkmate::assert_list(padding,
                            any.missing = FALSE,
@@ -344,7 +343,7 @@ write_img <- function(plots,
                               min.len = 1L,
                               max.len = 4L)
     # recycle arg to common length
-    padding %<>% list() |> rep(n_plots)
+    padding %<>% list() %>% rep(n_plots)
   }
   checkmate::assert_flag(show_progress)
   
@@ -380,7 +379,8 @@ write_img <- function(plots,
   # convert SVGs to those additional requested formats that **don't** properly handle viewbox-cropped SVGs
   all_svg_paths <- fs::path_ext_set(path = fs::path(dir, names(plots)),
                                     ext = "svg")
-  purrr::walk(formats_postscript,
+  purrr::walk(intersect(formats,
+                        formats_postscript),
               \(format) {
                 
                 purrr::pwalk(.l = list(path = all_svg_paths,
@@ -407,7 +407,8 @@ write_img <- function(plots,
                                   FALSE))
   
   # convert SVGs to the remaining additional requested formats that **do** properly handle viewbox-cropped SVGs
-  purrr::walk(formats_raster,
+  purrr::walk(intersect(formats,
+                        formats_raster),
               \(format) purrr::pwalk(.l = list(path = all_svg_paths,
                                                format = format),
                                      .f = svg_to_raster),

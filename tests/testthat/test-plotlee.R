@@ -19,6 +19,33 @@ test_that("`write_img()` converts to all supported formats", {
   fs::file_delete(path = all_output_paths)
 })
 
+test_that("`write_img()` can convert multiple plots", {
+  
+  list("mtcars_mpg_by_hp" = plotly::plot_ly(data = mtcars,
+                                            type = "scatter",
+                                            mode = "markers",
+                                            x = ~mpg,
+                                            y = ~hp),
+       "mtcars_mpg_by_qsec" = plotly::plot_ly(data = mtcars,
+                                              type = "scatter",
+                                              mode = "markers",
+                                              x = ~mpg,
+                                              y = ~qsec)) |>
+    plotlee::write_img()
+  
+  all_output_paths <-
+    c("mtcars_mpg_by_hp",
+      "mtcars_mpg_by_qsec") |>
+    purrr::map(\(x) paste0(x, c(".svg", ".pdf"))) |>
+    purrr::list_c(ptype = character())
+                                 
+  purrr::walk(all_output_paths,
+              \(path) expect_true(fs::file_exists(path)))
+  
+  # teardown
+  fs::file_delete(path = all_output_paths)
+})
+
 test_that("`simplify_trace_ids()` works as expected", {
   
   p <-
