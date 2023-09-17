@@ -64,6 +64,11 @@ post_process_svg <- function(path,
                                 access = "w")
   checkmate::assert_flag(responsive)
   checkmate::assert_flag(crop)
+  checkmate::assert_numeric(padding,
+                            lower = 0.0,
+                            any.missing = FALSE,
+                            min.len = 1L,
+                            max.len = 4L)
   
   xml <- xml2::read_xml(path)
   attrs <- character()
