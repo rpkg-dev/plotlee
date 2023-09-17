@@ -18,11 +18,221 @@
   reticulate::configure_environment(package = pkgname)
 }
 
-utils::globalVariables(names = c("."))
+utils::globalVariables(names = c(".",
+                                 "padding_bottom",
+                                 "padding_left",
+                                 "padding_right",
+                                 "padding_top",
+                                 "show_progress"))
 
 this_pkg <- utils::packageName()
 
-static_img_formats <- c("eps", "pdf", "png", "ps", "webp")
+formats_postscript <- c("pdf", "eps", "ps")
+
+formats_raster <- c("png", "webp")
+
+post_process_svg <- function(path,
+                             responsive,
+                             crop,
+                             padding) {
+  
+  checkmate::assert_file_exists(path,
+                                access = "w")
+  checkmate::assert_flag(responsive)
+  checkmate::assert_flag(crop)
+  
+  xml <- xml2::read_xml(path)
+  attrs <- character()
+  
+  # change SVGs' `width` and `height` properties to `100%` if requested
+  if (responsive) {
+    attrs["width"] <- "100%"
+    attrs["height"] <- "100%"
+  }
+  
+  # crop unused transparent space around image if requested; inspired by https://stackoverflow.com/a/69783110/7196903
+  if (crop) {
+    
+    # init padding
+    n_padding <- length(padding)
+    padding_top <- padding_bottom <- padding_left <- padding_right <- padding[1L]
+    
+    if (n_padding == 4L) {
+      padding_right <- padding[2L]
+      padding_bottom <- padding[3L]
+      padding_left <- padding[4L]
+    } else if (n_padding == 3L) {
+      padding_right <- padding[2L]
+      padding_left <- padding[2L]
+      padding_bottom <- padding[3L]
+    } else if (n_padding == 2L) {
+      padding_right <- padding[2L]
+      padding_left <- padding[2L]
+    }
+    
+    # determine opaque pixel coordinates
+    data_img <- magick::image_read_svg(path = path) |> magick::image_data()
+    ix_opaque <- which(data_img[4L, , ] != 0L,
+                       arr.ind = TRUE)
+    ix_opaque_start <- apply(X = ix_opaque,
+                             MARGIN = 2L,
+                             FUN = min)
+    ix_opaque_end <- apply(X = ix_opaque,
+                           MARGIN = 2L,
+                           FUN = max) - ix_opaque_start
+    
+    attrs["viewBox"] <- paste(paste(ix_opaque_start - c(padding_left, padding_top),
+                                    collapse = " "),
+                              paste(ix_opaque_end + c(padding_left + padding_right, padding_top + padding_bottom),
+                                    collapse = " "))
+  }
+  
+  # apply new SVG attributes
+  # NOTE: we can't use `xml2::xml_set_attrs()` since it completely replaces all attrs but at the same time doesn't allow to set the
+  #        `xmlns:xlink` attr again (it fails with a critical error if it's tried); thus we set the additional attrs one by one
+  purrr::iwalk(attrs,
+               \(val, name) xml2::xml_set_attr(x = xml,
+                                               attr = name,
+                                               value = val))
+  # overwrite original SVG file
+  xml2::write_xml(x = xml,
+                  file = path,
+                  options = c("format", "no_declaration"))
+  
+  invisible(path)
+}
+
+svg_to_postscript <- function(path,
+                              format = formats_postscript,
+                              crop,
+                              padding) {
+  
+  checkmate::assert_file_exists(path,
+                                access = "r")
+  format <- rlang::arg_match(format)
+  checkmate::assert_numeric(padding,
+                            lower = 0.0,
+                            any.missing = FALSE,
+                            min.len = 1L,
+                            max.len = 4L)
+  checkmate::assert_flag(crop)
+  path_output <- fs::path_ext_set(path,
+                                  ext = format)
+  switch(format,
+         eps = rsvg::rsvg_eps(svg = path,
+                              file = path_output),
+         pdf = rsvg::rsvg_pdf(svg = path,
+                              file = path_output),
+         ps = rsvg::rsvg_ps(svg = path,
+                            file = path_output))
+  
+  # cropping is only supported for PDF
+  if (format == "pdf" && crop) {
+    
+    pal::assert_cli(
+      cmd = "pdfcrop",
+      error_msg = paste0("The {.strong pdfcrop} executable is required but couldn't be found on system's {.href ",
+                         "[PATH](https://en.wikipedia.org/wiki/PATH_(variable))}. It is usually installed together with a full ",
+                         "TeX distribution like {.href [TeX Live](https://en.wikipedia.org/wiki/TeX_Live)}. If you're using ",
+                         "{.href [TinyTeX](https://yihui.org/tinytex/)}, simply install the {.href [pdfcrop LaTeX ",
+                         "package](https://ctan.org/pkg/pdfcrop)} via {.run tinytex::tlmgr_install(\"pdfcrop\")}.")
+    )
+    
+    if (tools::find_gs_cmd() == '') {
+      cli::cli_alert_warning(paste0("PDF cropping is skipped since the required Ghostscript executable wasn't found. See",
+                                    "{.fun tools::find_gs_cmd} for how it is detected on the system."))
+    } else {
+      
+      # init padding
+      n_padding <- length(padding)
+      padding_top <- padding_bottom <- padding_left <- padding_right <- padding[1L]
+      
+      if (n_padding == 4L) {
+        padding_right <- padding[2L]
+        padding_bottom <- padding[3L]
+        padding_left <- padding[4L]
+      } else if (n_padding == 3L) {
+        padding_right <- padding[2L]
+        padding_left <- padding[2L]
+        padding_bottom <- padding[3L]
+      } else if (n_padding == 2L) {
+        padding_right <- padding[2L]
+        padding_left <- padding[2L]
+      }
+      
+      system2(command = "pdfcrop",
+              args = c(glue::glue("--margins '{padding_left} {padding_top} {padding_right} {padding_bottom}'"),
+                       path_output,
+                       path_output),
+              stdout = FALSE)
+    }
+  }
+}
+
+svg_to_raster <- function(path,
+                          format = formats_raster) {
+  
+  checkmate::assert_file_exists(path,
+                                access = "r")
+  format <- rlang::arg_match(format)
+  path_output <- fs::path_ext_set(path,
+                                  ext = format)
+  switch(format,
+         png = rsvg::rsvg_png(svg = path,
+                              file = path_output),
+         webp = rsvg::rsvg_webp(svg = path,
+                                file = path_output))
+}
+
+write_svg <- function(plots,
+                      dir,
+                      width,
+                      height,
+                      scale,
+                      show_progress,
+                      msg) {
+  
+  # ensure required Python modules are available
+  has_python <-
+    c("plotly", "kaleido") %>%
+    purrr::map_lgl(reticulate::py_module_available) %>%
+    all()
+  
+  if (!has_python) {
+    cli::cli_abort(paste0("A working Python setup including the modules {.field plotly} and {.field kaleido} is required. See ",
+                          "{.url https://rdrr.io/cran/plotly/man/save_image.html#heading-4} for details."))
+  }
+  
+  # initialize kaleido
+  kaleido <- plotly::kaleido()
+  
+  # disable MathJax to avoid "Loading [MathJax]/extensions/MathMenu.js" message
+  # TODO: remove this once https://github.com/plotly/Kaleido/issues/122 is resolved
+  kaleido$scope$mathjax <- NULL
+  
+  # export to SVG
+  purrr::pwalk(.l = purrr::compact(list(obj = plots,
+                                        id = names(plots),
+                                        width = width,
+                                        height = height,
+                                        scale = scale)),
+               .f = \(obj,
+                      id,
+                      width = NULL,
+                      height = NULL,
+                      scale = NULL) {
+                 kaleido$transform(p = obj,
+                                   file = fs::path(dir, id,
+                                                   ext = "svg"),
+                                   width = width,
+                                   height = height,
+                                   scale = scale)
+               },
+               .progress = ifelse(show_progress,
+                                  msg,
+                                  FALSE))
+  kaleido$shutdown()
+}
 
 #' Save Plotly charts as static images
 #'
@@ -42,16 +252,23 @@ static_img_formats <- c("eps", "pdf", "png", "ps", "webp")
 #' It's recommended to rely on SVG images wherever possible and fall back to PDF images where necessary (e.g. in LaTeX documents) since these two vector image
 #' formats provide the best visual results. EPS and PS images should be avoided if possible due to their shortcomings in cropping and padding.
 #'
-#' @inheritParams plotly::save_image
 #' @param plots Charts to export. A named list of [plotly objects][plotly::plot_ly]. Names are used as output filenames (excl. filetype extension).
 #' @param dir Path to the directory of the exported files. A character scalar.
 #' @param formats Additional image file formats to export to besides the default SVG format. Zero or more of
-#'   `r static_img_formats |> pal::as_md_vals() |> pal::prose_ls()`.
+#'   `r c(formats_raster, formats_postscript) |> pal::as_md_vals() |> pal::prose_ls()`.
+#' @param width Width of the exported image in layout pixels. If `scale` is 1, this will also be the width of the exported image in physical pixels. An integer
+#'   vector that is recycled to the length of `plots`, or `NULL`.
+#' @param height Height of the exported image in layout pixels. If `scale` is 1, this will also be the height of the exported image in physical pixels. An
+#'   integer vector that is recycled to the length of `plots`, or `NULL`.
+#' @param scale Scale factor to use when exporting the figure. A scale factor larger than `1.0` will increase the image resolution with respect to the figure's
+#'   layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease the image resolution. A numeric vector that is recycled to the length of
+#'   `plots`, or `NULL`.
 #' @param responsive Whether or not to modify the SVG image to become responsive when inlined into HTML by setting its `width` and `height` property to
-#'   `"100%"`.
-#' @param crop Whether or not to crop unused space around the generated images. Note that this has no effect on `formats = c("eps", "ps")` – EPS images are
-#'   always cropped while cropping PS images is not supported.
-#' @param padding Padding to leave after cropping unused space around the generated image. A numeric vector of length 1–4:
+#'   `"100%"`.A logical vector, recycled to the length of `plots`.
+#' @param crop Whether or not to crop unused space around the generated image. Note that this has no effect on `formats = c("eps", "ps")` – EPS images are
+#'   always cropped while cropping PS images is not supported. A logical vector, recycled to the length of `plots`.
+#' @param padding Padding to leave after cropping unused space around the generated image. Either a single numeric vector, or a list of numeric vectors. Each
+#'   vector must be of length 1–4:
 #'   
 #'   - When one value is specified, it applies the same padding to all four sides.
 #'   - When two values are specified, the first padding applies to the top and bottom, the second to the left and right.
@@ -88,21 +305,53 @@ write_img <- function(plots,
   checkmate::assert_list(plots,
                          types = "plotly",
                          any.missing = FALSE,
-                         min.len = 1L,
                          names = "unique")
+  n_plots <- length(plots)
   checkmate::assert_directory_exists(dir,
                                      access = "w")
   checkmate::assert_subset(formats,
-                           choices = static_img_formats)
-  checkmate::assert_flag(responsive)
-  checkmate::assert_flag(crop)
-  checkmate::assert_numeric(padding,
+                           choices = c(formats_raster, formats_postscript))
+  checkmate::assert_integer(width,
+                            lower = 0L,
+                            any.missing = FALSE,
+                            null.ok = TRUE)
+  checkmate::assert_integer(height,
+                            lower = 0L,
+                            any.missing = FALSE,
+                            null.ok = TRUE)
+  checkmate::assert_numeric(scale,
                             lower = 0.0,
                             any.missing = FALSE,
-                            min.len = 1L,
-                            max.len = 4L)
+                            null.ok = TRUE)
+  checkmate::assert_logical(responsive,
+                            any.missing = FALSE)
+  checkmate::assert_logical(crop,
+                            any.missing = FALSE)
+  
+  if (is.list(padding)) {
+    checkmate::assert_list(padding,
+                           any.missing = FALSE,
+                           len = n_plots)
+  } else {
+    checkmate::assert_numeric(padding,
+                              lower = 0.0,
+                              any.missing = FALSE,
+                              min.len = 1L,
+                              max.len = 4L)
+  }
   checkmate::assert_flag(show_progress)
   
+  # recycle args to common length
+  if (!is.null(width)) width %<>% vctrs::vec_recycle(size = n_plots,
+                                                     x_arg = "width")
+  if (!is.null(height)) height %<>% vctrs::vec_recycle(size = n_plots,
+                                                       x_arg = "height")
+  if (!is.null(scale)) scale %<>% vctrs::vec_recycle(size = n_plots,
+                                                     x_arg = "scale")
+  responsive %<>% vctrs::vec_recycle(size = n_plots,
+                                     x_arg = "responsive")
+  crop %<>% vctrs::vec_recycle(size = n_plots,
+                               x_arg = "crop")
   # normalize dir
   dir %<>% fs::path_real()
   dir_rel <-
@@ -111,164 +360,54 @@ write_img <- function(plots,
     fs::path_common() |>
     fs::path_rel(path = dir)
   
-  # init padding
-  n_padding <- length(padding)
-  padding_top <- padding_bottom <- padding_left <- padding_right <- padding[1L]
-  
-  if (n_padding == 4L) {
-    padding_right <- padding[2L]
-    padding_bottom <- padding[3L]
-    padding_left <- padding[4L]
-  } else if (n_padding == 3L) {
-    padding_right <- padding[2L]
-    padding_left <- padding[2L]
-    padding_bottom <- padding[3L]
-  } else if (n_padding == 2L) {
-    padding_right <- padding[2L]
-    padding_left <- padding[2L]
-  }
-  
-  # ensure required Python modules are available
-  has_python <-
-    c("plotly", "kaleido") %>%
-    purrr::map_lgl(reticulate::py_module_available) %>%
-    all()
-  
-  if (!has_python) {
-    cli::cli_abort(paste0("A working Python setup including the modules {.field plotly} and {.field kaleido} is required. See ",
-                          "{.url https://rdrr.io/cran/plotly/man/save_image.html#heading-4} for details."))
-  }
-  
-  # initialize kaleido
-  kaleido <- plotly::kaleido()
-  
-  # disable MathJax to avoid "Loading [MathJax]/extensions/MathMenu.js" message
-  # TODO: remove this once https://github.com/plotly/Kaleido/issues/122 is resolved
-  kaleido$scope$mathjax <- NULL
-  
   # export to SVG
-  purrr::iwalk(.progress = ifelse(show_progress,
-                                  cli::format_inline("Exporting {.val {length(plots)}} Plotly chart{?s} as static {.field SVG} and {.field {toupper(formats)}}",
-                                                     "{cli::qty(length(plots))} image{?s} to {.path {paste0(dir_rel, '/')}}..."),
-                                  FALSE),
-               .x = plots,
-               .f = \(obj, id) kaleido$transform(p = obj,
-                                                 file = fs::path(dir, id,
-                                                                 ext = "svg"),
-                                                 width = width,
-                                                 height = height,
-                                                 scale = scale))
-  kaleido$shutdown()
+  write_svg(plots = plots,
+            dir = dir,
+            width = width,
+            height = height,
+            scale = scale,
+            show_progress = show_progress,
+            msg = cli::format_inline("Exporting {.val {length(plots)}} Plotly chart{?s} as static {.field SVG} and {.field {toupper(formats)}}",
+                                     "{cli::qty(length(plots))} image{?s} to {.path {paste0(dir_rel, '/')}}..."))
   
-  # convert SVG to those additional requested formats that **don't** properly handle viewbox-cropped SVGs
-  files_excl_ext <- fs::path(dir, names(plots))
-  all_formats_1st <- c("eps", "pdf", "ps")
-  formats_1st <- intersect(formats, all_formats_1st)
-  formats_2nd <- setdiff(formats, all_formats_1st)
-  
-  purrr::walk(.progress = ifelse(show_progress,
-                                 cli::format_inline("Converting {.val {length(files_excl_ext)}} original SVG images to {.field {formats_1st}} formats"),
-                                 FALSE),
-              formats_1st,
+  # convert SVGs to those additional requested formats that **don't** properly handle viewbox-cropped SVGs
+  all_svg_paths <- fs::path_ext_set(path = fs::path(dir, names(plots)),
+                                    ext = "svg")
+  purrr::walk(formats_postscript,
               \(format) {
                 
-                purrr::walk(files_excl_ext,
-                            \(path) {
-                              
-                              path_output <- fs::path(path,
-                                                      ext = format)
-                              # call a rsvg fn directly to please R CMD check
-                              rsvg::librsvg_version()
-                              eval(parse(text = glue::glue("rsvg::rsvg_{format}(svg = '{path}.svg', file = '{path_output}')")))
-                              
-                              if (format == "pdf" && crop) {
-                                
-                                pal::assert_cli(
-                                  cmd = "pdfcrop",
-                                  error_msg = paste0("The {.strong pdfcrop} executable is required but couldn't be found on system's {.href ",
-                                                     "[PATH](https://en.wikipedia.org/wiki/PATH_(variable))}. It is usually installed together with a full TeX",
-                                                     " distribution like {.href [TeX Live](https://en.wikipedia.org/wiki/TeX_Live)}. If you're using {.href ",
-                                                     "[TinyTeX](https://yihui.org/tinytex/)}, simply install the {.href [pdfcrop LaTeX ",
-                                                     "package](https://ctan.org/pkg/pdfcrop)} via {.run tinytex::tlmgr_install(\"pdfcrop\")}.")
-                                )
-                                
-                                if (tools::find_gs_cmd() == '') {
-                                  cli::cli_alert_warning(paste0("PDF cropping is skipped since the required Ghostscript executable wasn't found. See",
-                                                                "{.fun tools::find_gs_cmd} for how it is detected on the system."))
-                                }
-                                
-                                system2(command = "pdfcrop",
-                                        args = c(glue::glue("--margins '{padding_left} {padding_top} {padding_right} {padding_bottom}'"),
-                                                 path_output,
-                                                 path_output),
-                                        stdout = FALSE)
-                              }
-                            })
-              })
+                purrr::pwalk(.l = list(path = all_svg_paths,
+                                       format = format,
+                                       crop = crop,
+                                       padding = padding),
+                             .f = svg_to_postscript)
+              },
+              .progress = ifelse(show_progress,
+                                 cli::format_inline(paste0("Converting {.val {length(all_svg_paths)}} original SVG images to {.field ",
+                                                           "{formats_postscript}} formats")),
+                                 FALSE))
   
-  # post-process SVG if requested
-  if (responsive || crop) {
-    
-    fs::path(dir, names(plots),
-             ext = "svg") %>%
-      purrr::walk(.progress = ifelse(show_progress,
-                                     cli::format_inline("Post-processing {.val {length(plots)}} SVG images"),
-                                     FALSE),
-                  \(path) {
-                    
-                    xml <- xml2::read_xml(path)
-                    attrs <- character()
-                    
-                    # change SVGs' `width` and `height` properties to `100%` if requested
-                    if (responsive) {
-                      attrs["width"] <- "100%"
-                      attrs["height"] <- "100%"
-                    }
-                    
-                    # crop unused transparent space around image if requested; inspired by https://stackoverflow.com/a/69783110/7196903
-                    if (crop) {
-                      
-                      # determine opaque pixel coordinates
-                      data_img <- magick::image_read_svg(path = path) |> magick::image_data()
-                      ix_opaque <- which(data_img[4L, , ] != 0L,
-                                         arr.ind = TRUE)
-                      ix_opaque_start <- apply(X = ix_opaque,
-                                               MARGIN = 2L,
-                                               FUN = min)
-                      ix_opaque_end <- apply(X = ix_opaque,
-                                             MARGIN = 2L,
-                                             FUN = max) - ix_opaque_start
-                      
-                      attrs["viewBox"] <- paste(paste(ix_opaque_start - c(padding_left, padding_top),
-                                                      collapse = " "),
-                                                paste(ix_opaque_end + c(padding_left + padding_right, padding_top + padding_bottom),
-                                                      collapse = " "))
-                    }
-                    
-                    # apply new SVG attributes
-                    # NOTE: we can't use `xml2::xml_set_attrs()` since it completely replaces all attrs but at the same time doesn't allow to set the
-                    #        `xmlns:xlink` attr again (it fails with a critical error if it's tried); thus we set the additional attrs one by one
-                    purrr::iwalk(attrs,
-                                 \(val, name) xml2::xml_set_attr(x = xml,
-                                                                 attr = name,
-                                                                 value = val))
-                    # overwrite original SVG file
-                    xml2::write_xml(x = xml,
-                                    file = path,
-                                    options = c("format", "no_declaration"))
-                  })
-  }
+  # post-process SVGs if requested
+  i_postprocess <- which(responsive | crop)
   
-  # convert SVG to the remaining additional requested formats that **do** properly handle viewbox-cropped SVGs
-  purrr::walk(.progress = ifelse(show_progress,
-                                 cli::format_inline("Converting {.val {length(files_excl_ext)}} post-processed SVG images to {.field {formats_2nd}} formats"),
-                                 FALSE),
-              formats_2nd,
-              \(format) {
-                purrr::walk(files_excl_ext,
-                            \(path) eval(parse(text = glue::glue("rsvg::rsvg_{format}(svg = '{path}.svg', file = '{path}.{format}')"))))
-              })
+  purrr::pwalk(.l = list(path = all_svg_paths[i_postprocess],
+                         responsive = responsive[i_postprocess],
+                         crop = crop[i_postprocess],
+                         padding = padding[i_postprocess]),
+               .f = post_process_svg,
+               .progress = ifelse(show_progress,
+                                  cli::format_inline("Post-processing {.val {length(plots)}} SVG images"),
+                                  FALSE))
   
+  # convert SVGs to the remaining additional requested formats that **do** properly handle viewbox-cropped SVGs
+  purrr::walk(formats_raster,
+              \(format) purrr::pwalk(.l = list(path = all_svg_paths,
+                                               format = format),
+                                     .f = svg_to_raster),
+              .progress = ifelse(show_progress,
+                                 cli::format_inline(paste0("Converting {.val {length(all_svg_paths)}} post-processed SVG images to ",
+                                                           "{.field {formats_raster}} formats")),
+                                 FALSE))
   invisible(plots)
 }
 

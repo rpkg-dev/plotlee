@@ -23,24 +23,26 @@ write_img(
 \item{dir}{Path to the directory of the exported files. A character scalar.}
 
 \item{formats}{Additional image file formats to export to besides the default SVG format. Zero or more of
-\code{"eps"}, \code{"pdf"}, \code{"png"}, \code{"ps"} and \code{"webp"}.}
+\code{"png"}, \code{"webp"}, \code{"pdf"}, \code{"eps"} and \code{"ps"}.}
 
-\item{width, height}{The width/height of the exported image in layout
-pixels. If \code{scale} is 1, this will also be the width/height of the exported
-image in physical pixels.}
+\item{width}{Width of the exported image in layout pixels. If \code{scale} is 1, this will also be the width of the exported image in physical pixels. An integer
+vector that is recycled to the length of \code{plots}, or \code{NULL}.}
 
-\item{scale}{The scale factor to use when exporting
-the figure. A scale factor larger than 1.0 will increase the image
-resolution with respect to the figure's layout pixel dimensions. Whereas as
-scale factor of less than 1.0 will decrease the image resolution.}
+\item{height}{Height of the exported image in layout pixels. If \code{scale} is 1, this will also be the height of the exported image in physical pixels. An
+integer vector that is recycled to the length of \code{plots}, or \code{NULL}.}
+
+\item{scale}{Scale factor to use when exporting the figure. A scale factor larger than \code{1.0} will increase the image resolution with respect to the figure's
+layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease the image resolution. A numeric vector that is recycled to the length of
+\code{plots}, or \code{NULL}.}
 
 \item{responsive}{Whether or not to modify the SVG image to become responsive when inlined into HTML by setting its \code{width} and \code{height} property to
-\code{"100\%"}.}
+\code{"100\%"}.A logical vector, recycled to the length of \code{plots}.}
 
-\item{crop}{Whether or not to crop unused space around the generated images. Note that this has no effect on \code{formats = c("eps", "ps")} – EPS images are
-always cropped while cropping PS images is not supported.}
+\item{crop}{Whether or not to crop unused space around the generated image. Note that this has no effect on \code{formats = c("eps", "ps")} – EPS images are
+always cropped while cropping PS images is not supported. A logical vector, recycled to the length of \code{plots}.}
 
-\item{padding}{Padding to leave after cropping unused space around the generated image. A numeric vector of length 1–4:
+\item{padding}{Padding to leave after cropping unused space around the generated image. Either a single numeric vector, or a list of numeric vectors. Each
+vector must be of length 1–4:
 \itemize{
 \item When one value is specified, it applies the same padding to all four sides.
 \item When two values are specified, the first padding applies to the top and bottom, the second to the left and right.

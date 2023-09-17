@@ -89,34 +89,38 @@ supports automatic cropping of unused space around the exported images.
 
 <dt>formats</dt>
 <dd><p>Additional image file formats to export to besides the default SVG format. Zero or more of
-<code>"eps"</code>, <code>"pdf"</code>, <code>"png"</code>, <code>"ps"</code> and <code>"webp"</code>.</p></dd>
+<code>"png"</code>, <code>"webp"</code>, <code>"pdf"</code>, <code>"eps"</code> and <code>"ps"</code>.</p></dd>
 
 
-<dt>width, height</dt>
-<dd><p>The width/height of the exported image in layout
-pixels. If <code>scale</code> is 1, this will also be the width/height of the exported
-image in physical pixels.</p></dd>
+<dt>width</dt>
+<dd><p>Width of the exported image in layout pixels. If <code>scale</code> is 1, this will also be the width of the exported image in physical pixels. An integer
+vector that is recycled to the length of <code>plots</code>, or <code>NULL</code>.</p></dd>
+
+
+<dt>height</dt>
+<dd><p>Height of the exported image in layout pixels. If <code>scale</code> is 1, this will also be the height of the exported image in physical pixels. An
+integer vector that is recycled to the length of <code>plots</code>, or <code>NULL</code>.</p></dd>
 
 
 <dt>scale</dt>
-<dd><p>The scale factor to use when exporting
-the figure. A scale factor larger than 1.0 will increase the image
-resolution with respect to the figure's layout pixel dimensions. Whereas as
-scale factor of less than 1.0 will decrease the image resolution.</p></dd>
+<dd><p>Scale factor to use when exporting the figure. A scale factor larger than <code>1.0</code> will increase the image resolution with respect to the figure's
+layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease the image resolution. A numeric vector that is recycled to the length of
+<code>plots</code>, or <code>NULL</code>.</p></dd>
 
 
 <dt>responsive</dt>
 <dd><p>Whether or not to modify the SVG image to become responsive when inlined into HTML by setting its <code>width</code> and <code>height</code> property to
-<code>"100%"</code>.</p></dd>
+<code>"100%"</code>.A logical vector, recycled to the length of <code>plots</code>.</p></dd>
 
 
 <dt>crop</dt>
-<dd><p>Whether or not to crop unused space around the generated images. Note that this has no effect on <code>formats = c("eps", "ps")</code> – EPS images are
-always cropped while cropping PS images is not supported.</p></dd>
+<dd><p>Whether or not to crop unused space around the generated image. Note that this has no effect on <code>formats = c("eps", "ps")</code> – EPS images are
+always cropped while cropping PS images is not supported. A logical vector, recycled to the length of <code>plots</code>.</p></dd>
 
 
 <dt>padding</dt>
-<dd><p>Padding to leave after cropping unused space around the generated image. A numeric vector of length 1–4:</p><ul><li><p>When one value is specified, it applies the same padding to all four sides.</p></li>
+<dd><p>Padding to leave after cropping unused space around the generated image. Either a single numeric vector, or a list of numeric vectors. Each
+vector must be of length 1–4:</p><ul><li><p>When one value is specified, it applies the same padding to all four sides.</p></li>
 <li><p>When two values are specified, the first padding applies to the top and bottom, the second to the left and right.</p></li>
 <li><p>When three values are specified, the first padding applies to the top, the second to the right and left, the third to the bottom.</p></li>
 <li><p>When four values are specified, the paddings apply to the top, right, bottom, and left in that order (clockwise).</p></li>

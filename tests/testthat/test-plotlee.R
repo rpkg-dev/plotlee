@@ -1,3 +1,24 @@
+test_that("`write_img()` converts to all supported formats", {
+  
+  skip_if_not_installed("webp")
+  
+  plotly::plot_ly(data = mtcars,
+                  type = "scatter",
+                  mode = "markers",
+                  x = ~mpg,
+                  y = ~hp) |>
+    list("mtcars_mpg_by_hp" = _) |>
+    plotlee::write_img(formats = c(formats_raster, formats_postscript))
+  
+  all_output_paths <- paste0("mtcars_mpg_by_hp.", c("svg", formats_raster, formats_postscript))
+  
+  purrr::walk(all_output_paths,
+              \(path) expect_true(fs::file_exists(path)))
+  
+  # teardown
+  fs::file_delete(path = all_output_paths)
+})
+
 test_that("`simplify_trace_ids()` works as expected", {
   
   p <-
