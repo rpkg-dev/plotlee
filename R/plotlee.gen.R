@@ -237,6 +237,9 @@ write_svg <- function(plots,
                                   msg,
                                   FALSE))
   kaleido$shutdown()
+  
+  invisible(fs::path(dir, names(plots),
+                     ext = "svg"))
 }
 
 #' Save Plotly charts as static images
@@ -284,7 +287,7 @@ write_svg <- function(plots,
 #'   relevant if `crop = TRUE`. Note that `padding` has no effect on `formats = "eps"`, i.e. EPS images are always fully cropped.
 #' @param show_progress `r pkgsnip::param_lbl("show_progress")`
 #'
-#' @return `plots`, invisibly.
+#' @return The paths to the generated SVG files, invisibly.
 #' @export
 #'
 #' @examples
@@ -367,14 +370,14 @@ write_img <- function(plots,
     fs::path_rel(path = dir)
   
   # export to SVG
-  write_svg(plots = plots,
-            dir = dir,
-            width = width,
-            height = height,
-            scale = scale,
-            show_progress = show_progress,
-            msg = cli::format_inline("Exporting {.val {length(plots)}} Plotly chart{?s} as static {.field SVG} and {.field {toupper(formats)}}",
-                                     "{cli::qty(length(plots))} image{?s} to {.path {paste0(dir_rel, '/')}}..."))
+  svg_paths <- write_svg(plots = plots,
+                         dir = dir,
+                         width = width,
+                         height = height,
+                         scale = scale,
+                         show_progress = show_progress,
+                         msg = cli::format_inline("Exporting {.val {length(plots)}} Plotly chart{?s} as static {.field SVG} and {.field {toupper(formats)}}",
+                                                  "{cli::qty(length(plots))} image{?s} to {.path {paste0(dir_rel, '/')}}..."))
   
   # convert SVGs to those additional requested formats that **don't** properly handle viewbox-cropped SVGs
   all_svg_paths <- fs::path_ext_set(path = fs::path(dir, names(plots)),
@@ -416,7 +419,7 @@ write_img <- function(plots,
                                  cli::format_inline(paste0("Converting {.val {length(all_svg_paths)}} post-processed SVG images to ",
                                                            "{.field {formats_raster}} formats")),
                                  FALSE))
-  invisible(plots)
+  invisible(svg_paths)
 }
 
 #' Make plotly trace identifiers reproducible

@@ -56,7 +56,7 @@ relevant if \code{crop = TRUE}. Note that \code{padding} has no effect on \code{
 \item{show_progress}{Whether or not to output progress indication.}
 }
 \value{
-\code{plots}, invisibly.
+The paths to the generated SVG files, invisibly.
 }
 \description{
 Writes Plotly charts to static image files in SVG and optionally additional formats (EPS, PDF, PNG, PS, and/or WebP) using \code{\link[plotly:save_image]{plotly::kaleido()}}.

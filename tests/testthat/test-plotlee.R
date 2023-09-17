@@ -1,4 +1,4 @@
-test_that("`write_img()` converts to all supported formats", {
+test_that("`write_img()` converts a single plot to all supported formats", {
   
   skip_if_not_installed("webp")
   
@@ -44,6 +44,47 @@ test_that("`write_img()` can convert multiple plots", {
   
   # teardown
   fs::file_delete(path = all_output_paths)
+})
+
+test_that("`write_img()` doesn't choke on zero-length input", {
+  
+  expect_no_error(plotly::plot_ly(data = mtcars,
+                                  type = "scatter",
+                                  mode = "markers",
+                                  x = ~mpg,
+                                  y = ~hp) |>
+                    list("mtcars_mpg_by_hp" = _) |>
+                    _[0L] |>
+                    plotlee::write_img())
+})
+
+test_that("`write_img()` returns the paths to generated SVGs", {
+  
+  paths <-
+    list("mtcars_mpg_by_hp" = plotly::plot_ly(data = mtcars,
+                                              type = "scatter",
+                                              mode = "markers",
+                                              x = ~mpg,
+                                              y = ~hp),
+         "mtcars_mpg_by_qsec" = plotly::plot_ly(data = mtcars,
+                                                type = "scatter",
+                                                mode = "markers",
+                                                x = ~mpg,
+                                                y = ~qsec)) |>
+    plotlee::write_img()
+  
+  all_output_paths <- fs::path(getwd(), c("mtcars_mpg_by_hp",
+                                          "mtcars_mpg_by_qsec"),
+                               ext = "svg")
+  expect_identical(paths,
+                   all_output_paths)
+  
+  # teardown
+  c("mtcars_mpg_by_hp",
+    "mtcars_mpg_by_qsec") |>
+    purrr::map(\(x) paste0(x, c(".svg", ".pdf"))) |>
+    purrr::list_c(ptype = character()) |>
+    fs::file_delete()
 })
 
 test_that("`simplify_trace_ids()` works as expected", {
