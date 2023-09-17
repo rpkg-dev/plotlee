@@ -400,6 +400,8 @@ write_img <- function(plots,
                               any.missing = FALSE,
                               min.len = 1L,
                               max.len = 4L)
+    # recycle arg to common length
+    padding %<>% list() |> rep(n_plots)
   }
   checkmate::assert_flag(show_progress)
   
