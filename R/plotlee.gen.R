@@ -60,7 +60,7 @@ static_img_formats <- c("eps", "pdf", "png", "ps", "webp")
 #'   
 #'   For `formats = "pdf"`, the values are in [`bp`](https://en.wikibooks.org/wiki/LaTeX/Lengths#Units) ("big points"), for all other formats in pixels. Only
 #'   relevant if `crop = TRUE`. Note that `padding` has no effect on `formats = "eps"`, i.e. EPS images are always fully cropped.
-#' @param show_progress `r pkgsnip::param_lbl("show_progress")``
+#' @param show_progress `r pkgsnip::param_lbl("show_progress")`
 #'
 #' @return `plots`, invisibly.
 #' @export
@@ -73,7 +73,7 @@ static_img_formats <- c("eps", "pdf", "png", "ps", "webp")
 #'                 x = ~mpg,
 #'                 y = ~hp) |>
 #'   list("mtcars_mpg_by_hp" = _) |>
-#'   plotlee::write_img(formats = "pdf")}
+#'   plotlee::write_img(formats = c("pdf", "png"))}
 write_img <- function(plots,
                       dir = ".",
                       formats = "pdf",
@@ -186,8 +186,8 @@ write_img <- function(plots,
                                 pal::assert_cli(
                                   cmd = "pdfcrop",
                                   error_msg = paste0("The {.strong pdfcrop} executable is required but couldn't be found on system's {.href ",
-                                                     "[PATH](https://en.wikipedia.org/wiki/PATH_(variable))}. It is usually installed together with a full TeX ",
-                                                     "distribution like {.href [TeX Live](https://en.wikipedia.org/wiki/TeX_Live)}. If you're using {.href ",
+                                                     "[PATH](https://en.wikipedia.org/wiki/PATH_(variable))}. It is usually installed together with a full TeX",
+                                                     " distribution like {.href [TeX Live](https://en.wikipedia.org/wiki/TeX_Live)}. If you're using {.href ",
                                                      "[TinyTeX](https://yihui.org/tinytex/)}, simply install the {.href [pdfcrop LaTeX ",
                                                      "package](https://ctan.org/pkg/pdfcrop)} via {.run tinytex::tlmgr_install(\"pdfcrop\")}.")
                                 )

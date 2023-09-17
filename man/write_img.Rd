@@ -51,7 +51,7 @@ always cropped while cropping PS images is not supported.}
 For \code{formats = "pdf"}, the values are in \href{https://en.wikibooks.org/wiki/LaTeX/Lengths#Units}{\code{bp}} ("big points"), for all other formats in pixels. Only
 relevant if \code{crop = TRUE}. Note that \code{padding} has no effect on \code{formats = "eps"}, i.e. EPS images are always fully cropped.}
 
-\item{show_progress}{`r pkgsnip::param_lbl("show_progress")``}
+\item{show_progress}{Whether or not to output progress indication.}
 }
 \value{
 \code{plots}, invisibly.
@@ -81,5 +81,5 @@ plotly::plot_ly(data = mtcars,
                 x = ~mpg,
                 y = ~hp) |>
   list("mtcars_mpg_by_hp" = _) |>
-  plotlee::write_img(formats = "pdf")}
+  plotlee::write_img(formats = c("pdf", "png"))}
 }

@@ -18,7 +18,7 @@ Imports:
     glue (>= 1.6.2),
     magick (>= 2.7.4),
     magrittr (>= 2.0.3),
-    pal (>= 0.0.9100),
+    pal (>= 0.0.9101),
     plotly (>= 4.10.1),
     purrr (>= 1.0.1),
     reticulate (>= 1.30),
