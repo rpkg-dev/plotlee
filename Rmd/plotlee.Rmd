@@ -318,10 +318,10 @@ NOTES:
 #' @param dir Path to the directory of the exported files. A character scalar.
 #' @param formats Additional image file formats to export to besides the default SVG format. Zero or more of
 #'   `r c(formats_raster, formats_postscript) |> pal::as_md_vals() |> pal::prose_ls()`.
-#' @param width Width of the exported image in layout pixels. If `scale` is 1, this will also be the width of the exported image in physical pixels. An integer
+#' @param width Width of the exported image in layout pixels. If `scale` is 1, this will also be the width of the exported image in physical pixels. A numeric
 #'   vector that is recycled to the length of `plots`, or `NULL`.
-#' @param height Height of the exported image in layout pixels. If `scale` is 1, this will also be the height of the exported image in physical pixels. An
-#'   integer vector that is recycled to the length of `plots`, or `NULL`.
+#' @param height Height of the exported image in layout pixels. If `scale` is 1, this will also be the height of the exported image in physical pixels. A
+#'   numeric vector that is recycled to the length of `plots`, or `NULL`.
 #' @param scale Scale factor to use when exporting the figure. A scale factor larger than `1.0` will increase the image resolution with respect to the figure's
 #'   layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease the image resolution. A numeric vector that is recycled to the length of
 #'   `plots`, or `NULL`.
@@ -373,14 +373,14 @@ write_img <- function(plots,
                                      access = "w")
   checkmate::assert_subset(formats,
                            choices = c(formats_raster, formats_postscript))
-  checkmate::assert_integerish(width,
-                               lower = 0L,
-                               any.missing = FALSE,
-                               null.ok = TRUE)
-  checkmate::assert_integerish(height,
-                               lower = 0L,
-                               any.missing = FALSE,
-                               null.ok = TRUE)
+  checkmate::assert_numeric(width,
+                            lower = 0.0,
+                            any.missing = FALSE,
+                            null.ok = TRUE)
+  checkmate::assert_numeric(height,
+                            lower = 0.0,
+                            any.missing = FALSE,
+                            null.ok = TRUE)
   checkmate::assert_numeric(scale,
                             lower = 0.0,
                             any.missing = FALSE,

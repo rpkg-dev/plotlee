@@ -25,11 +25,11 @@ write_img(
 \item{formats}{Additional image file formats to export to besides the default SVG format. Zero or more of
 \code{"png"}, \code{"webp"}, \code{"pdf"}, \code{"eps"} and \code{"ps"}.}
 
-\item{width}{Width of the exported image in layout pixels. If \code{scale} is 1, this will also be the width of the exported image in physical pixels. An integer
+\item{width}{Width of the exported image in layout pixels. If \code{scale} is 1, this will also be the width of the exported image in physical pixels. A numeric
 vector that is recycled to the length of \code{plots}, or \code{NULL}.}
 
-\item{height}{Height of the exported image in layout pixels. If \code{scale} is 1, this will also be the height of the exported image in physical pixels. An
-integer vector that is recycled to the length of \code{plots}, or \code{NULL}.}
+\item{height}{Height of the exported image in layout pixels. If \code{scale} is 1, this will also be the height of the exported image in physical pixels. A
+numeric vector that is recycled to the length of \code{plots}, or \code{NULL}.}
 
 \item{scale}{Scale factor to use when exporting the figure. A scale factor larger than \code{1.0} will increase the image resolution with respect to the figure's
 layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease the image resolution. A numeric vector that is recycled to the length of
