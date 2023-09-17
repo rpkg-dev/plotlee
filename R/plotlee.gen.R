@@ -316,14 +316,14 @@ write_img <- function(plots,
                                      access = "w")
   checkmate::assert_subset(formats,
                            choices = c(formats_raster, formats_postscript))
-  checkmate::assert_integer(width,
-                            lower = 0L,
-                            any.missing = FALSE,
-                            null.ok = TRUE)
-  checkmate::assert_integer(height,
-                            lower = 0L,
-                            any.missing = FALSE,
-                            null.ok = TRUE)
+  checkmate::assert_integerish(width,
+                               lower = 0L,
+                               any.missing = FALSE,
+                               null.ok = TRUE)
+  checkmate::assert_integerish(height,
+                               lower = 0L,
+                               any.missing = FALSE,
+                               null.ok = TRUE)
   checkmate::assert_numeric(scale,
                             lower = 0.0,
                             any.missing = FALSE,
