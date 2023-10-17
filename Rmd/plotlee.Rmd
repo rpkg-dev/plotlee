@@ -118,7 +118,7 @@ post_process_svg <- function(path,
   
   # apply new SVG attributes
   # NOTE: we can't use `xml2::xml_set_attrs()` since it completely replaces all attrs but at the same time doesn't allow to set the
-  #        `xmlns:xlink` attr again (it fails with a critical error if it's tried); thus we set the additional attrs one by one
+  #       `xmlns:xlink` attr again (it fails with a critical error if it's tried); thus we set the additional attrs one by one
   purrr::iwalk(attrs,
                \(val, name) xml2::xml_set_attr(x = xml,
                                                attr = name,
