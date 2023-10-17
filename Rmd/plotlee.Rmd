@@ -313,7 +313,7 @@ NOTES:
 #'
 #' @details
 #' PNG and WebP images are completely based on the resulting SVG image, while EPS, PDF and PS are built from an intermediate SVG representation (before
-#' viewbox-based SVG cropping is applied). Hence, results of the different output formats might differ.
+#' viewbox-based SVG cropping is applied). Accordingly, results of the different output formats might differ.
 #'
 #' It's recommended to rely on SVG images wherever possible and fall back to PDF images where necessary (e.g. in LaTeX documents) since these two vector image
 #' formats provide the best visual results. EPS and PS images should be avoided if possible due to their shortcomings in cropping and padding.
@@ -330,7 +330,7 @@ NOTES:
 #'   layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease the image resolution. A numeric vector that is recycled to the length of
 #'   `plots`, or `NULL`.
 #' @param responsive Whether or not to modify the SVG image to become responsive when inlined into HTML by setting its `width` and `height` property to
-#'   `"100%"`.A logical vector, recycled to the length of `plots`.
+#'   `"100%"`. A logical vector, recycled to the length of `plots`.
 #' @param crop Whether or not to crop unused space around the generated image. Note that this has no effect on `formats = c("eps", "ps")` – EPS images are
 #'   always cropped while cropping PS images is not supported. A logical vector, recycled to the length of `plots`.
 #' @param padding Padding to leave after cropping unused space around the generated image. Either a single numeric vector, or a list of numeric vectors. Each

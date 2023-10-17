@@ -36,7 +36,7 @@ layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease 
 \code{plots}, or \code{NULL}.}
 
 \item{responsive}{Whether or not to modify the SVG image to become responsive when inlined into HTML by setting its \code{width} and \code{height} property to
-\code{"100\%"}.A logical vector, recycled to the length of \code{plots}.}
+\code{"100\%"}. A logical vector, recycled to the length of \code{plots}.}
 
 \item{crop}{Whether or not to crop unused space around the generated image. Note that this has no effect on \code{formats = c("eps", "ps")} – EPS images are
 always cropped while cropping PS images is not supported. A logical vector, recycled to the length of \code{plots}.}
@@ -71,7 +71,7 @@ In contrast to \code{\link[plotly:save_image]{plotly::save_image()}}, this funct
 }
 \details{
 PNG and WebP images are completely based on the resulting SVG image, while EPS, PDF and PS are built from an intermediate SVG representation (before
-viewbox-based SVG cropping is applied). Hence, results of the different output formats might differ.
+viewbox-based SVG cropping is applied). Accordingly, results of the different output formats might differ.
 
 It's recommended to rely on SVG images wherever possible and fall back to PDF images where necessary (e.g. in LaTeX documents) since these two vector image
 formats provide the best visual results. EPS and PS images should be avoided if possible due to their shortcomings in cropping and padding.

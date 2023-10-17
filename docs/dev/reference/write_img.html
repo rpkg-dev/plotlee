@@ -113,7 +113,7 @@ layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease 
 
 <dt>responsive</dt>
 <dd><p>Whether or not to modify the SVG image to become responsive when inlined into HTML by setting its <code>width</code> and <code>height</code> property to
-<code>"100%"</code>.A logical vector, recycled to the length of <code>plots</code>.</p></dd>
+<code>"100%"</code>. A logical vector, recycled to the length of <code>plots</code>.</p></dd>
 
 
 <dt>crop</dt>
@@ -144,7 +144,7 @@ relevant if <code>crop = TRUE</code>. Note that <code>padding</code> has no effe
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>PNG and WebP images are completely based on the resulting SVG image, while EPS, PDF and PS are built from an intermediate SVG representation (before
-viewbox-based SVG cropping is applied). Hence, results of the different output formats might differ.</p>
+viewbox-based SVG cropping is applied). Accordingly, results of the different output formats might differ.</p>
 <p>It's recommended to rely on SVG images wherever possible and fall back to PDF images where necessary (e.g. in LaTeX documents) since these two vector image
 formats provide the best visual results. EPS and PS images should be avoided if possible due to their shortcomings in cropping and padding.</p>
     </div>
