@@ -306,9 +306,10 @@ NOTES:
 #' 
 #' In contrast to [plotly::save_image()], this function
 #'
-#' - can export multiple [plotly objects][plotly::plot_ly] in a single kaleido session to multiple output formats in one go.
-#' - can tweak the exported SVG images to be responsive.
-#' - supports automatic cropping of unused space around the exported images.
+#' - allows to export multiple [plotly objects][plotly::plot_ly] in a single kaleido session to multiple output formats in one go.
+#' - allows to tweak the exported SVG images to be responsive.
+#' - allows to crop unused space around the exported images.
+#' - allows to add padding around the exported images.
 #'
 #' @details
 #' PNG and WebP images are completely based on the resulting SVG image, while EPS, PDF and PS are built from an intermediate SVG representation (before
