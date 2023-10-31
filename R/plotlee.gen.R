@@ -425,7 +425,7 @@ write_img <- function(plots,
 
 #' Make plotly trace identifiers reproducible
 #'
-#' Replaces the random trace identifiers of a [plotly object][plotly::plot_ly] with simple sequential ones (`trace_1`, `trace_2` and so on).
+#' Replaces the random trace identifiers of a [plotly object][plotly::plot_ly] with simple sequential ones (`trace_0`, `trace_1` and so on).
 #'
 #' This function is especially useful to apply before a plotly object or its JSON representation (as generated for rendered R Markdown / Quarto documents) 
 #' is [version controlled](https://en.wikipedia.org/wiki/Version_control) (e.g. via Git).
