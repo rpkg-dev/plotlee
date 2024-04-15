@@ -137,8 +137,8 @@ post_process_svg <- function(path,
 ```{r}
 svg_to_postscript <- function(path,
                               format = formats_postscript,
-                              crop,
-                              padding) {
+                              crop = TRUE,
+                              padding = 0.0) {
   
   checkmate::assert_file_exists(path,
                                 access = "r")

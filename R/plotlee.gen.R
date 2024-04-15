@@ -2,7 +2,7 @@
 # See `README.md#r-markdown-format` for more information on the literate programming approach used applying the R Markdown format.
 
 # plotlee: Unofficial Helper Functions around Plotly
-# Copyright (C) 2023 Salim Brüggemann
+# Copyright (C) 2024 Salim Brüggemann
 # 
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free
 # Software Foundation, either version 3 of the License, or any later version.
@@ -109,8 +109,8 @@ post_process_svg <- function(path,
 
 svg_to_postscript <- function(path,
                               format = formats_postscript,
-                              crop,
-                              padding) {
+                              crop = TRUE,
+                              padding = 0.0) {
   
   checkmate::assert_file_exists(path,
                                 access = "r")
