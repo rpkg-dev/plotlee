@@ -9,7 +9,7 @@ output: pal::gitlab_document
 knitr::opts_knit$set(root.dir = getwd())
 
 library(rlang,
-        include.only = c("%|%", "%||%"))
+        include.only = "%|%")
 library(magrittr,
         include.only = c("%>%", "%<>%", "%T>%", "%!>%", "%$%"))
 ```
