@@ -1,9 +1,8 @@
-pandoc: 3.1.13
-pkgdown: 2.0.8.9000
-pkgdown_sha: 984909674f1ccc802da9ee8450d923acd4f8f695
+pandoc: '3.5'
+pkgdown: 2.1.1
+pkgdown_sha: ~
 articles: {}
-last_built: 2024-04-15T16:58Z
+last_built: 2024-12-07T02:40Z
 urls:
   reference: https://plotlee.rpkg.dev/reference
   article: https://plotlee.rpkg.dev/articles
-
