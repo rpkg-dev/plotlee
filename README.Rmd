@@ -17,7 +17,7 @@ library(magrittr,
 # `r pal::desc_value("Package")`
 
 ```{r}
-#| label: description
+#| label: pkg-desc
 #| results: asis
 #| echo: false
 
@@ -30,11 +30,11 @@ pal::cat_lines(paste0("[![CRAN Status](https://r-pkg.org/badges/version/", pal::
 ```
 
 ```{r}
-#| label: documentation
+#| label: pkg-doc
 #| eval: !expr '!isTRUE(getOption("pal.build_readme.is_pkgdown"))'
 #| results: asis
 #| echo: false
-pkgsnip::md_snip(id = "pkgdown_notice") %>%
+pkgsnip::md_snip(id = "pkgdown_site") %>%
   paste0("## Documentation\n\n",
          "[![Netlify Status](https://api.netlify.com/api/v1/badges/f1183707-47e4-4767-ac4d-d52ec0200a38/deploy-status)]",
          "(https://app.netlify.com/sites/plotlee-rpkg-dev/deploys)\n\n",
@@ -45,16 +45,16 @@ pkgsnip::md_snip(id = "pkgdown_notice") %>%
 ## Installation
 
 ```{r}
-#| label: install-snippet-dev
-#| child: !expr pkgsnip::snip_path("installation-notice_dev-version_gitlab.Rmd")
+#| label: pkg-instl-dev
+#| child: !expr pkgsnip::snip_path("pkg-instl-dev-gitlab.Rmd")
 ```
 
 ```{r}
-#| label: usage
+#| label: pkg-usage
 #| eval: !expr isTRUE(getOption("pal.build_readme.is_pkgdown"))
 #| results: asis
 #| echo: false
-pkgsnip::md_snip(id = "usage_notice") %>%
+pkgsnip::md_snip(id = "pkg_usage") %>%
   paste0("## Usage\n\n", .) %>%
   pal::cat_lines()
 ```
@@ -64,13 +64,13 @@ pkgsnip::md_snip(id = "usage_notice") %>%
 ### R Markdown format
 
 ```{r}
-#| label: rmd-format
-#| child: !expr pkgsnip::snip_path("rmd-package-notice.Rmd")
+#| label: pkgpurl
+#| child: !expr pkgsnip::snip_path("pkgpurl.Rmd")
 ```
 
 ### Coding style
 
 ```{r}
-#| label: coding-style
-#| child: !expr pkgsnip::snip_path("coding-style-notice.Rmd")
+#| label: pkg-code-style
+#| child: !expr pkgsnip::snip_path("pkg-code-style.Rmd")
 ```
