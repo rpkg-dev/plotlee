@@ -21,7 +21,7 @@ Imports:
     pal (>= 0.0.9101),
     plotly (>= 4.10.1),
     purrr (>= 1.0.1),
-    reticulate (>= 1.30),
+    reticulate (>= 1.41),
     rlang (>= 1.1.0),
     rsvg (>= 2.4.0),
     tools,
@@ -34,8 +34,6 @@ Suggests:
 Remotes:
     gitlab::rpkg.dev/pal,
     gitlab::rpkg.dev/pkgdown.tpl
-Config/reticulate: list(packages = list(list(package = "plotly", pip =
-    TRUE), list(package = "kaleido", pip = TRUE)))
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true

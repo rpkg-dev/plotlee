@@ -10,8 +10,10 @@ editor_options:
 ```{r}
 .onLoad <- function(libname, pkgname) {
 
-  # cf. https://rstudio.github.io/reticulate/articles/python_dependencies.html#onload-configuration
-  reticulate::configure_environment(package = pkgname)
+  # cf. https://rstudio.github.io/reticulate/articles/package.html
+  reticulate::py_require(packages = c("plotly",
+                                      "kaleido"),
+                         action = "add")
 }
 ```
 
@@ -288,8 +290,13 @@ write_svg <- function(plots,
 NOTES:
 
 -   To initialize reticulate's default shared Python virtualenv `r-reticulate`, run `reticulate::virtualenv_create()`. Before reticulate
-    [v1.31](https://github.com/rstudio/reticulate/releases/tag/v1.31), it nudged to install miniconda if this virtualenv didn't exist. Latest reticulate
-    automatically proposes to create this virtualenv 🎉!
+    [v1.31](https://github.com/rstudio/reticulate/releases/tag/v1.31), it nudged to install miniconda if this virtualenv didn't exist. Version 1.31 of
+    reticulate started to automatically propose creating this virtualenv 🎉!
+
+    reticulate [v1.41](https://github.com/rstudio/reticulate/releases/tag/v1.41.0) introduced a [new Python initialization
+    workflow](https://rstudio.github.io/reticulate/articles/package.html) based on
+    [`reticulate::py_require()`](https://rstudio.github.io/reticulate/reference/py_require.html) which automatically creates ephemeral Python venvs if needed
+    without any user interaction.
 
 -   `rsvg::rsvg_*()` handles unused transparent space around the input SVG differently for the different output formats. `rsvg::rsvg_eps/pdf/ps()` do not
     properly handle viewbox-cropped SVGs, while `rsvg::rsvg_png/webp` do. Thus we account for this in the function's logic.

@@ -2,7 +2,7 @@
 # See `README.md#r-markdown-format` for more information on the literate programming approach used applying the R Markdown format.
 
 # plotlee: Unofficial Helper Functions around Plotly
-# Copyright (C) 2024 Salim Brüggemann
+# Copyright (C) 2025 Salim Brüggemann
 # 
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free
 # Software Foundation, either version 3 of the License, or any later version.
@@ -14,8 +14,10 @@
 
 .onLoad <- function(libname, pkgname) {
 
-  # cf. https://rstudio.github.io/reticulate/articles/python_dependencies.html#onload-configuration
-  reticulate::configure_environment(package = pkgname)
+  # cf. https://rstudio.github.io/reticulate/articles/package.html
+  reticulate::py_require(packages = c("plotly",
+                                      "kaleido"),
+                         action = "add")
 }
 
 utils::globalVariables(names = c(".",
