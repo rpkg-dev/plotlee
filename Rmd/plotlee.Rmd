@@ -233,8 +233,8 @@ TODO:
 -   The Python module availability checks should ideally be performed in [plotly::kaleido()](https://github.com/plotly/plotly.R/blob/master/R/kaleido.R) via
     [`reticulate::py_require(packages = c("plotly", "kaleido))`](https://rstudio.github.io/reticulate/dev/articles/package.html) during `.onLoad()`.
 
-    Submit a PR upstream doing this (plus our `reticulate::py_module_available()`-based check instead of the `reticulate::import()` calls) and remove the
-    `has_python` check here as well as our own `reticulate::py_require()` call during `.onLoad()` (which would become redundant). Note that
+    Submit a PR upstream doing this (plus our `reticulate::py_module_available()`-based check instead of the dummy `reticulate::import("plotly")` call) and
+    remove the `has_python` check here as well as our own `reticulate::py_require()` call during `.onLoad()` (which would become redundant). Note that
     `reticulate::py_require()` requires reticulate \>= 1.41.
 
 ```{r}
