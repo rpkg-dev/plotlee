@@ -228,6 +228,13 @@ svg_to_raster <- function(path,
 
 ### `write_svg`
 
+TODO:
+
+-   The Python module availability checks should ideally be performed in [plotly::kaleido()](https://github.com/plotly/plotly.R/blob/master/R/kaleido.R) via
+    [`reticulate::py_require(packages = c("plotly", "kaleido))`](https://rstudio.github.io/reticulate/dev/articles/package.html) during `.onLoad()`. Submit a PR
+    upstream doing this and remove the `has_python` check here as well as our own `reticulate::py_require()` call during `.onLoad()` (which would become
+    redundant).
+
 ```{r}
 write_svg <- function(plots,
                       dir,
