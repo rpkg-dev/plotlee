@@ -2,7 +2,7 @@ Package: plotlee
 Title: Unofficial Helper Functions around Plotly
 Version: 0.0.9000
 Authors@R: 
-    person("Salim", "Brüggemann", , "salim-b@pm.me", role = c("aut", "cre"),
+    person("Salim", "Brüggemann", , "salim@rpkg.dev", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5329-5987"))
 Description: Provides unofficial helper functions around the plotly
     package, the R API for the JavaScript graphing library plotly.js.
