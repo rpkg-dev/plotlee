@@ -14,17 +14,17 @@ library(magrittr,
         include.only = c("%>%", "%<>%", "%T>%", "%!>%", "%$%"))
 ```
 
-# `r pal::desc_value("Package")`
+# `r pal::desc_get_field_safe("Package")`
 
 ```{r}
 #| label: pkg-desc
 #| results: asis
 #| echo: false
 
-pal::cat_lines(paste0("[![CRAN Status](https://r-pkg.org/badges/version/", pal::desc_value(key = "Package"), ")](https://cran.r-project.org/package=",
-                      pal::desc_value(key = "Package"), "){.pkgdown-release}"),
+pal::cat_lines(paste0("[![CRAN Status](https://r-pkg.org/badges/version/", pal::desc_get_field_safe(key = "Package"), ")](https://cran.r-project.org/package=",
+                      pal::desc_get_field_safe(key = "Package"), "){.pkgdown-release}"),
                "",
-               stringr::str_replace_all(string = pal::desc_value("Description"),
+               stringr::str_replace_all(string = pal::desc_get_field_safe("Description"),
                                         pattern = c("plotly package" = "[plotly](https://plotly-r.com/) package",
                                                     "plotly.js" = "[plotly.js](https://plotly.com/javascript/)")))
 ```
